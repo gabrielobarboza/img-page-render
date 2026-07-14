@@ -1,10 +1,29 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAllPages } from '@/lib/images-pages';
 import { getProxyImageUrl } from '@/lib/image-url';
+import { useMemo, useState } from 'react';
 
 export default function Home() {
-  const pages = getAllPages();
+  const pages = useMemo(() => getAllPages(), []);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredPages = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+
+    if (!term) {
+      return pages;
+    }
+
+    return pages.filter((page) => {
+      return (
+        page.page_title.toLowerCase().includes(term) ||
+        page.url_path.toLowerCase().includes(term)
+      );
+    });
+  }, [pages, searchTerm]);
 
   return (
     <main className="catalog-page">
@@ -33,14 +52,43 @@ export default function Home() {
       </header>
 
       <div className="catalog-shell">
+        <div className="catalog-search-row">
+          <label htmlFor="catalog-search" className="catalog-search-label">
+            Buscar por título
+          </label>
+          <div className="catalog-search-input-wrap">
+            <span className="catalog-search-icon" aria-hidden="true">🔎</span>
+            <input
+              id="catalog-search"
+              type="search"
+              placeholder="Ex.: Bulbasaur, Pikachu, Totodile..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="catalog-search-input"
+            />
+            <div className="catalog-search-actions">
+              {searchTerm ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  className="catalog-search-clear"
+                  aria-label="Limpar busca"
+                >
+                  Limpar
+                </button>
+              ) : null}
+              <span className="catalog-search-count">{filteredPages.length} resultado(s)</span>
+            </div>
+          </div>
+        </div>
 
-        {pages.length === 0 ? (
+        {filteredPages.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8 text-center text-gray-400">
-            Nenhuma página encontrada no JSON.
+            Nenhuma página encontrada para: {searchTerm}
           </div>
         ) : (
           <div className="catalog-grid">
-            {pages.map((page, index) => {
+            {filteredPages.map((page, index) => {
               const coverImage = page.images.find((image) => typeof image === 'string' && image.trim().length > 0);
               const coverSrc = coverImage ? getProxyImageUrl(coverImage) : '';
 
