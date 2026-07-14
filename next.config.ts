@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const isGitHubPagesBuild = process.env.GITHUB_ACTIONS === 'true';
-const repositoryName = 'img-page.github.io';
+const repositoryName = 'img-page-render';
 
 const nextConfig: NextConfig = {
   output: 'export',

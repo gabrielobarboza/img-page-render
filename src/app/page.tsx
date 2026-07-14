@@ -40,8 +40,9 @@ export default function Home() {
           </div>
         ) : (
           <div className="catalog-grid">
-            {pages.map((page) => {
-              const coverImage = page.images[0];
+            {pages.map((page, index) => {
+              const coverImage = page.images.find((image) => typeof image === 'string' && image.trim().length > 0);
+              const coverSrc = coverImage ? getProxyImageUrl(coverImage) : '';
 
               return (
                 <Link
@@ -50,15 +51,15 @@ export default function Home() {
                   className="catalog-card group"
                 >
                   <div className="catalog-card-media">
-                    {coverImage ? (
+                    {coverSrc ? (
                       <Image
-                        src={getProxyImageUrl(coverImage)}
+                        src={coverSrc}
                         alt={`${page.page_title}-0`}
                         fill
                         sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
                         unoptimized
                         className="catalog-card-image"
-                        loading="lazy"
+                        priority={index < 2}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-gray-500">
