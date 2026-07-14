@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAllPages } from '@/lib/images-pages';
+import { getProxyImageUrl } from '@/lib/image-url';
 
 export default function Home() {
   const pages = getAllPages();
-  const getCoverImageUrl = (imageUrl: string) => `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
 
   return (
     <main className="catalog-page">
@@ -52,7 +52,7 @@ export default function Home() {
                   <div className="catalog-card-media">
                     {coverImage ? (
                       <Image
-                        src={getCoverImageUrl(coverImage)}
+                        src={getProxyImageUrl(coverImage)}
                         alt={`${page.page_title}-0`}
                         fill
                         sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"

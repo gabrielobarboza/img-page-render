@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { getProxyImageUrl } from '@/lib/image-url';
 
 export interface ImagesData {
   url_path: string;
@@ -11,7 +12,6 @@ export interface ImagesData {
 
 export default function ImageSequenceViewer({ page }: { page: ImagesData }) {
   const totalImages = page.images.length;
-  const getImageProxyUrl = (imageUrl: string) => `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
 
   const handlePrint = () => {
     window.print();
@@ -74,7 +74,7 @@ export default function ImageSequenceViewer({ page }: { page: ImagesData }) {
             {page.images.map((imageUrl, index) => (
               <img
                 key={`${page.page_title}-${index}`}
-                src={getImageProxyUrl(imageUrl)}
+                src={getProxyImageUrl(imageUrl)}
                 alt={`${page.page_title}-${index}`}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 className="viewer-image"
